@@ -1,0 +1,68 @@
+﻿<!--Week view window -->
+        <Grid Margin="30" Grid.Row="0" ShowGridLines="False">
+            <!-- static code for calendar-->
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" /> <!-- Time tag location -->
+                <ColumnDefinition Width="2" />  <!-- Border -->
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />  <!-- Border -->
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />  <!-- Border -->
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />  <!-- Border -->
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />  <!-- Border -->
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2" />  <!-- Border -->
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <!--<RowDefinition Height="450" />-->
+                <!--Time locations -->
+                <RowDefinition Height="30" /> <!-- 6 -->
+                <RowDefinition Height="30" /> <!-- 7 -->
+                <RowDefinition Height="30" /> <!-- 8 -->
+                <RowDefinition Height="30" /> <!-- 9 -->
+                <RowDefinition Height="30" /> <!-- 10 -->
+                <RowDefinition Height="30" /> <!-- 11 -->
+                <RowDefinition Height="30" /> <!-- 12 -->
+                <RowDefinition Height="30" /> <!-- 1 -->
+                <RowDefinition Height="30" /> <!-- 2 -->
+                <RowDefinition Height="30" /> <!-- 3 -->
+                <RowDefinition Height="30" /> <!-- 4 -->
+                <RowDefinition Height="30" /> <!-- 5 -->
+                <RowDefinition Height="30" /> <!-- 6 -->
+                <RowDefinition Height="30" /> <!-- 7 -->
+                <RowDefinition Height="30" /> <!-- 8 -->
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">6 AM</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Top">7 AM</TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Top">8 AM</TextBlock>
+            <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Top">9 AM</TextBlock>
+            <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">10 AM</TextBlock>
+            <TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Top">11 AM</TextBlock>
+            <TextBlock Grid.Row="7" Grid.Column="0" VerticalAlignment="Top">12 PM</TextBlock>
+            <TextBlock Grid.Row="8" Grid.Column="0" VerticalAlignment="Top">1 PM</TextBlock>
+            <TextBlock Grid.Row="9" Grid.Column="0" VerticalAlignment="Top">2 PM</TextBlock>
+            <TextBlock Grid.Row="10" Grid.Column="0" VerticalAlignment="Top">3 PM</TextBlock>
+            <TextBlock Grid.Row="11" Grid.Column="0" VerticalAlignment="Top">4 PM</TextBlock>
+            <TextBlock Grid.Row="12" Grid.Column="0" VerticalAlignment="Top">5 PM</TextBlock>
+            <TextBlock Grid.Row="13" Grid.Column="0" VerticalAlignment="Top">6 PM</TextBlock>
+            <TextBlock Grid.Row="14" Grid.Column="0" VerticalAlignment="Top">7 PM</TextBlock>
+            <TextBlock Grid.Row="15" Grid.Column="0" VerticalAlignment="Top">8 PM</TextBlock>
+            
+            <Rectangle Grid.Column="1" Grid.RowSpan="16" Fill="Black" />
+            <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Monday</Label>
+            <Rectangle Grid.Column="3" Grid.RowSpan="16" Fill="Black" />
+            <Label Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center">Tuesday</Label>
+            <Rectangle Grid.Column="5" Grid.RowSpan="16" Fill="Black" />
+            <Label Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center">Wednesday</Label>
+            <Rectangle Grid.Column="7" Grid.RowSpan="16" Fill="Black" />
+            <Label Grid.Row="0" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center">Thursday</Label>
+            <Rectangle Grid.Column="9" Grid.RowSpan="16" Fill="Black" />
+            <Label Grid.Row="0" Grid.Column="10" HorizontalAlignment="Center" VerticalAlignment="Center">Friday</Label>
+            <Rectangle Grid.Column="11" Grid.RowSpan="16" Fill="Black" />
+        </Grid>

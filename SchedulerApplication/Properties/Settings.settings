@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SchedulerApplication.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="timeStart" Type="System.String" Scope="User">
+      <Value Profile="(Default)">6:00 AM</Value>
+    </Setting>
+    <Setting Name="timeEnd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">6:00 PM</Value>
+    </Setting>
+    <Setting Name="WeekViewRowCreate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">18,50,*</Value>
+    </Setting>
+    <Setting Name="WeekViewColCreate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">6,60,*</Value>
+    </Setting>
+    <Setting Name="Setting" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,22 @@
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\bin\Debug\SchedulerApplication.exe.config
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\bin\Debug\SchedulerApplication.exe
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\bin\Debug\SchedulerApplication.pdb
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication.csprojResolveAssemblyReference.cache
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\MainWindow.g.cs
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\App.g.cs
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication_MarkupCompile.cache
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication_MarkupCompile.lref
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\MainWindow.baml
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication.g.resources
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication.Properties.Resources.resources
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication.csproj.GenerateResource.Cache
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication.exe
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\SchedulerApplication.pdb
+h:\Data\Documents\Visual Studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\GeneratedInternalTypeHelper.g.cs
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\Settings.g.cs
+h:\data\documents\visual studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\Settings.baml
+H:\Data\Documents\Visual Studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\AddCourse.g.cs
+H:\Data\Documents\Visual Studio 2015\Projects\SchedulerApplication\SchedulerApplication\obj\Debug\AddCourse.baml
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\bin\Debug\SchedulerApplication.exe.config
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\SchedulerApplication.exe
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\SchedulerApplication.pdb

@@ -1,0 +1,120 @@
+﻿<Window x:Class="SchedulerApplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SchedulerApplication"
+        mc:Ignorable="d"
+        Title="Schooduler" Height="950" Width="1024" Name="root">
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CustomCommands.Exit" CanExecute="exitCommand_CanExecute" Executed="exitCommand_Executed" />
+        <CommandBinding Command="local:CustomCommands.Settings" CanExecute="settingsCommand_CanExecute" Executed="settingsCommand_Executed" />
+    </Window.CommandBindings>
+
+    <Window.Resources>
+        <ContextMenu x:Key="courseTileContextMenu">
+            <MenuItem Header="Edit Course" Click="menu_editCourseClick" />
+            <MenuItem Header="Delete Course" Click="menu_deleteCourseClick" />
+        </ContextMenu>
+    </Window.Resources>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <Menu>
+                <MenuItem Header="_File">
+                    <MenuItem Command="local:CustomCommands.Exit"/>
+                </MenuItem>
+                <MenuItem Header="_Edit">
+                    <MenuItem Command="local:CustomCommands.Settings" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_About" />
+                </MenuItem>
+            </Menu>
+
+            <!-- Program header-->
+            <TextBlock FontSize="20" HorizontalAlignment="Center" Margin="10">
+                Week of: <Run Text="{Binding Path=ViewingWeek, ElementName=root}" />
+            </TextBlock>
+        </StackPanel>
+
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="550" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions>
+
+            <local:ExtendedGrid ShowCustomGridLines="True" GridLineBrush="Black" GridLineThickness="1" Margin="30,10,30,10"               
+              x:Name="gv_weekView"
+              local:GridBuilders.RowCreate="{Binding Path=GridRowCreate, Mode=TwoWay, ElementName=root}"
+              local:GridBuilders.ColumnCreate="{Binding Path=GridColCreate, Mode=TwoWay, ElementName=root}" >
+                <Grid.Resources>
+                    <Style x:Key="weekViewColText" TargetType="TextBlock">
+                        <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="18" />
+                    </Style>
+                    <Style x:Key="weekViewRowText" TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+
+                    <!-- Custom ToggleButton for CourseTiles-->
+                    <!-- Eventually want to add border that is a darker version of the tile's color instead of black-->
+                    <!-- Also want to add feature where the string resizes itself to fit on one line in the CourseTile-->
+                    <Style TargetType="ToggleButton" x:Key="CourseTile">
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="FontSize" Value="25" />
+                        <Setter Property="ContextMenu" Value="{StaticResource courseTileContextMenu}" />
+                        <EventSetter Event="Checked" Handler="courseTile_Clicked" />
+                        <EventSetter Event="Unchecked" Handler="courseTile_Unclicked" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Grid>
+                                        <Rectangle Name="rectangle" Fill="{TemplateBinding Background}" RadiusX="10" RadiusY="10" />
+                                        <Border Name="border" Background="Transparent" BorderThickness="0" BorderBrush="Black" CornerRadius="10" />
+                                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Grid>
+
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="border" Property="BorderThickness" Value="10" />
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter TargetName="border" Property="BorderThickness" Value="0" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+            </local:ExtendedGrid>
+
+            <!-- Add course button-->
+            <Button Name="add_course_button" Padding="2" Margin="0,2,30,2" HorizontalAlignment="Right" Grid.Row="1" MaxHeight="30"
+                    Click="addCourseButton_Click">Add Course</Button>
+
+
+            <!--Task view window -->
+            <DataGrid Grid.Row="2" Margin="30" Name="dg_tasks" AutoGenerateColumns="False" >
+                <DataGrid.Resources>
+                    <local:FullDateToMonthDay x:Key="FullDateToMonthDay" />
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Finished" Binding="{Binding Completed}" />
+                    <DataGridTextColumn Header="Assignment" Binding="{Binding Assignment}" Width="*"/>
+                    <DataGridTextColumn Header="Due" Binding="{Binding Due, Converter={StaticResource FullDateToMonthDay}}" />
+                    <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
+</Window>
