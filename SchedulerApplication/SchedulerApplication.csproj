@@ -59,6 +59,7 @@
       <DependentUpon>AddCourse.xaml</DependentUpon>
     </Compile>
     <Compile Include="ButtonProperties.cs" />
+    <Compile Include="Course.cs" />
     <Compile Include="CustomCommands.cs" />
     <Compile Include="ExtendedGrid.cs" />
     <Compile Include="GridBuilders.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Task.cs" />
     <Compile Include="Time.cs" />
     <Page Include="AddCourse.xaml">
       <SubType>Designer</SubType>

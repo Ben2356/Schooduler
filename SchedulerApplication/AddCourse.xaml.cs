@@ -98,18 +98,8 @@ namespace SchedulerApplication
         public Course newCourse { get; protected set; }
 
         private List<Course> CourseList { get; }
-
-        public AddCourse(List<Course> courseList)
-        {
-            StartHour = EndHour = 12;
-            StartMin = EndMin = 0;
-            InitializeComponent();
-            BtnCancel.IsCancel = true;
-            CourseList = courseList;
-            List<string> todList = new List<string>() { "AM", "PM" };
-            cmb_startTOD.ItemsSource = todList;
-            cmb_endTOD.ItemsSource = todList;
-            List<string> tileColorsList = new List<string>()
+        private List<string> todList = new List<string>() { "AM", "PM" };
+        private List<string> tileColorsList = new List<string>()
             {
                 "Aqua",
                 "Aquamarine",
@@ -195,7 +185,56 @@ namespace SchedulerApplication
                 "Yellow",
                 "YellowGreen"
             };
+
+        public AddCourse(List<Course> courseList)
+        {
+            StartHour = EndHour = 12;
+            StartMin = EndMin = 0;
+            InitializeComponent();
+            BtnCancel.IsCancel = true;
+            CourseList = courseList;
+            cmb_startTOD.ItemsSource = todList;
+            cmb_endTOD.ItemsSource = todList;
             cmb_colorPicker.ItemsSource = tileColorsList;
+        }
+
+        //constructor that populates the settings fields with already known values
+        public AddCourse(string courseTitle, Time startTime, Time endTime, List<string> courseDays, Color courseColor)
+        {
+            InitializeComponent();
+            courseName.Text = courseTitle;
+            txt_startHour.Text = startTime.Hour.ToString();
+            txt_startMin.Text = startTime.Min.ToString();
+            cmb_startTOD.ItemsSource = todList;
+            cmb_startTOD.SelectedIndex = todList.IndexOf(startTime.TOD);
+            txt_endHour.Text = endTime.Hour.ToString();
+            txt_endMin.Text = endTime.Min.ToString();
+            cmb_endTOD.ItemsSource = todList;
+            cmb_endTOD.SelectedIndex = todList.IndexOf(endTime.TOD);
+            for(int i = 0; i < courseDays.Count; i++)
+            {
+                switch(courseDays[i])
+                {
+                    case "Monday":
+                        M.IsChecked = true;
+                        break;
+                    case "Tuesday":
+                        T.IsChecked = true;
+                        break;
+                    case "Wednesday":
+                        W.IsChecked = true;
+                        break;
+                    case "Thursday":
+                        TH.IsChecked = true;
+                        break;
+                    case "Friday":
+                        F.IsChecked = true;
+                        break;
+                }
+            }
+            cmb_colorPicker.ItemsSource = tileColorsList;
+            string colorName = (typeof(Colors).GetProperties().FirstOrDefault(p => Color.AreClose(courseColor, (Color)p.GetValue(null)))).Name;
+            cmb_colorPicker.SelectedIndex = tileColorsList.IndexOf(colorName);
         }
 
         private void cancelButton_click(object sender, RoutedEventArgs e)
@@ -203,6 +242,7 @@ namespace SchedulerApplication
             Close();
         }
 
+        //TODO: add a mode that will edit the object instead of try to make an entirely new one
         private void addButton_click(object sender, RoutedEventArgs e)
         {
             List<string> courseDays = new List<string>();

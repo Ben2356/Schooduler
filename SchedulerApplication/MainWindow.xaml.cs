@@ -23,6 +23,7 @@ namespace SchedulerApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        //TODO: handle globals and update function calls
         public static string GridRowCreate { get; set; }
         public static string GridColCreate { get; set; }
         public static string ViewingWeek { get; set; }
@@ -174,10 +175,17 @@ namespace SchedulerApplication
 
         private void menu_editCourseClick(object sender, RoutedEventArgs e)
         {
-
+            var menuitem = sender as MenuItem;
+            var contextmenu = menuitem.Parent as ContextMenu;
+            ToggleButton btn = ContextMenuService.GetPlacementTarget(contextmenu) as ToggleButton;
+            Course editTarget = CourseList[indexOfCourse((string)btn.Content)];
+            AddCourse courseEditWindow = new AddCourse(editTarget.CourseName, editTarget.TimeStart, editTarget.TimeEnd, editTarget.CourseDay, editTarget.TileColor);
+            if(courseEditWindow.ShowDialog() == true)
+            {
+                GridBuilders.drawCourses(gv_weekView, CourseList, timeRange, dayList);
+            }
         }
 
-        //REMOVE SELECTED DG TASKS UPON DELETION
         private void menu_deleteCourseClick(object sender, RoutedEventArgs e)
         {
             var menuitem = sender as MenuItem;
@@ -188,54 +196,9 @@ namespace SchedulerApplication
             timeRange = GridBuilders.drawGridRowTimes(gv_weekView);
             GridBuilders.drawColDayHeaders(gv_weekView, dayList);
             GridBuilders.drawCourses(gv_weekView, CourseList, timeRange, dayList);
+            dg_tasks.ItemsSource = null;
         }
     } 
-
-    //example course object class
-    public class Course
-    {
-        public string CourseName { get; set; }
-        public Time TimeStart { get; set; }
-        public Time TimeEnd { get; set; }
-        public Color TileColor { get; set; }
-        public List<Task> TaskList { get; set; }
-        public List<string> CourseDay { get; set; }
-
-        //test
-        public List<ToggleButton> relatedButtons { get; set; }
-
-        public Course()
-        {
-        }
-
-        public Course(string name, Time timeStart, Time timeEnd, List<Task> tasks, List<string> days, Color color)
-        {
-            CourseName = name;
-            TimeStart = timeStart;
-            TimeEnd = timeEnd;
-            TaskList = tasks;
-            CourseDay = days;
-            TileColor = color;
-        }
-    }
-
-    //example task class
-    public class Task
-    {
-        private bool completed;
-        public Task()
-        {
-            completed = false;
-        }
-        public string Assignment { get; set; }
-        public bool Completed
-        {
-            get { return completed; }
-            set { completed = value; }
-        }
-        public DateTime Due { get; set; }
-        public string Notes { get; set; }
-    }
 
     public class FullDateToMonthDay : IValueConverter
     {
@@ -246,7 +209,6 @@ namespace SchedulerApplication
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            //TODO: argument out of range exception needs to be handled
             if(((string)value).Length != 0)
             {
                 int lengthOfMonth = ((string)value).IndexOf('/');
@@ -285,14 +247,14 @@ namespace SchedulerApplication
                         nYear++;
 
                     //if PM is appended to a situation where there is only 1 hour digit then add 12 hours to force to PM
-                    if (tod == "PM" || tod == "pm")
+                    if ((tod == "PM" || tod == "pm") && nHour != 12)
                     {
                         nHour += 12;
                     }
                     return new DateTime(nYear, nMonth, nDay, nHour, nMin, 0);
                 }
             }
-            MessageBox.Show("INVALID DATE/TIME FORMAT!\n\nFORMAT: MM/DD HH:MM TT","Data Formatting Error",MessageBoxButton.OK,MessageBoxImage.Error);
+            MessageBox.Show("Invailid date or time format!\nFORMAT: MM/DD HH:MM TT","Data Formatting Error",MessageBoxButton.OK,MessageBoxImage.Error);
             return null;
         }
 
@@ -303,6 +265,8 @@ namespace SchedulerApplication
 
         private bool isValidDateTimeFields(int month, int day, int hour, int min)
         {
+            if (DateTime.DaysInMonth(DateTime.Now.Year, month) < day)
+                return false;
             return (month > 0 && month <= 12 && day > 0 && day <= 31 && hour >= 0 && hour < 24 && min >= 0 && min <= 59);
         }
     }
