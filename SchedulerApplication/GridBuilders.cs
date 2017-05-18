@@ -277,16 +277,32 @@ namespace SchedulerApplication
             int start = Utils.getMilitaryHour(startTime);
             int end = Utils.getMilitaryHour(Properties.Settings.Default.timeEnd);
             float delta = (float)end - start;
-            TextBlock time;
-            Time currTime = new Time(startTime);                 
             MainWindow.GridRowCreate = (delta + 2) + ",50,*";
             grid.GetBindingExpression(RowCreateProperty).UpdateTarget();
             grid.InvalidateVisual();
-            for (int i = 1; i < grid.RowDefinitions.Count; i++)
-            {
-                currTime = new Time(currTime.ToString());
-                if (i != 1)                                   
+
+            //add the starting time to the timeRange and grid row
+            timeRange.Add(new Time(startTime));
+            TextBlock time = new TextBlock();
+            time.Text = startTime.ToString();
+            time.Style = grid.FindResource("weekViewRowText") as Style;
+            Grid.SetRow(time, 1);
+            grid.Children.Add(time);
+            
+            //set up next entry's TOD
+            Time currTime = new Time(startTime);
+            currTime.Hour++;
+
+            //don't want tod to switch over from AM/PM when starting value is 12 
+            currTime.TOD = timeRange[0].TOD;
+
+            for (int i = 2; i < grid.RowDefinitions.Count; i++)
+            {   
+                if(i != 2)
+                {
+                    currTime = new Time(currTime.ToString());
                     currTime.Hour++;
+                }
                 timeRange.Add(currTime);
                 time = new TextBlock();
                 time.Text = currTime.ToString();
@@ -312,7 +328,6 @@ namespace SchedulerApplication
             }
         }
 
-        //12AM TO ANY TIME HAS BROKEN END TIME
         public static void drawCourses(Grid grid, List<Course> courseList, List<Time> timeRange, List<string> dayList)
         {
             for (int i = 0; i < courseList.Count; i++)
@@ -327,9 +342,9 @@ namespace SchedulerApplication
                 float endMinRatio = (float)endMin / 60;
                 bool endNotVisible = false;
                 bool startNotVisible = false;
-                if (endMHour > timeRange[timeRange.Count - 1].MilitaryTimeHour)
+                if (endMHour > timeRange[timeRange.Count - 1].MilitaryTimeHour || endMHour < timeRange[0].MilitaryTimeHour)
                     endNotVisible = true;
-                if (mHour < timeRange[0].MilitaryTimeHour)
+                if (mHour < timeRange[0].MilitaryTimeHour || mHour > timeRange[timeRange.Count - 1].MilitaryTimeHour)
                     startNotVisible = true;
                 int timeRangeStartLoc = -1;
                 int dayColIndex = 0;
@@ -362,11 +377,16 @@ namespace SchedulerApplication
                                     courseList[i].relatedButtons = new List<ToggleButton>();
                                 courseList[i].relatedButtons.Add(courseTile);
                             }
-                            Grid.SetRowSpan(courseTile, rowSpanCount);
-                            Grid.SetRow(courseTile, timeRangeStartLoc);
-                            Grid.SetColumn(courseTile, dayColIndex);
-                            grid.Children.Add(courseTile);
                             courseTile.SetValue(ButtonProperties.TaskListProperty, courseList[i].TaskList);
+
+                            //if courseTile is completely outside the visible area, doesn't need to be rendered
+                            if (rowSpanCount > 0)
+                            {
+                                Grid.SetRowSpan(courseTile, rowSpanCount);
+                                Grid.SetRow(courseTile, timeRangeStartLoc);
+                                Grid.SetColumn(courseTile, dayColIndex);
+                                grid.Children.Add(courseTile);
+                            }
                         }
                     }
                 }                

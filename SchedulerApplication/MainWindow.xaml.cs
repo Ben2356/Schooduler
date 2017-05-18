@@ -27,7 +27,7 @@ namespace SchedulerApplication
         public static string GridRowCreate { get; set; }
         public static string GridColCreate { get; set; }
         public static string ViewingWeek { get; set; }
-        public List<Course> CourseList { get; set; }
+        public static List<Course> CourseList { get; set; }
         public List<Time> timeRange;
         public List<string> dayList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
         public static List<int> weekViewDayList { get; set; }
@@ -107,8 +107,8 @@ namespace SchedulerApplication
             }               
         }
 
-        public bool isRefCall = false;
-        public ToggleButton prevSelectedButton;
+        private bool isRefCall = false;
+        private ToggleButton prevSelectedButton;
 
         private void courseTile_Clicked(object sender, RoutedEventArgs e)
         {
@@ -179,9 +179,16 @@ namespace SchedulerApplication
             var contextmenu = menuitem.Parent as ContextMenu;
             ToggleButton btn = ContextMenuService.GetPlacementTarget(contextmenu) as ToggleButton;
             Course editTarget = CourseList[indexOfCourse((string)btn.Content)];
-            AddCourse courseEditWindow = new AddCourse(editTarget.CourseName, editTarget.TimeStart, editTarget.TimeEnd, editTarget.CourseDay, editTarget.TileColor);
+
+            //need to force unclick of clicked buttons
+            btn.IsChecked = false;
+
+            AddCourse courseEditWindow = new AddCourse(editTarget.CourseName, editTarget.TimeStart, editTarget.TimeEnd, editTarget.CourseDay, editTarget.TileColor, editTarget.TaskList);
             if(courseEditWindow.ShowDialog() == true)
             {
+                CourseList.Add(courseEditWindow.newCourse);
+                timeRange = GridBuilders.drawGridRowTimes(gv_weekView);
+                GridBuilders.drawColDayHeaders(gv_weekView, dayList);
                 GridBuilders.drawCourses(gv_weekView, CourseList, timeRange, dayList);
             }
         }

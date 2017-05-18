@@ -9,6 +9,7 @@ using System.Windows.Media;
 namespace SchedulerApplication
 {
     //course object class
+    //CourseNames are unique identifiers
     public class Course
     {
         public string CourseName { get; set; }

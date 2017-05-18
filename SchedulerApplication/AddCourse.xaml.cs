@@ -97,6 +97,15 @@ namespace SchedulerApplication
         //couse to add to the courseList
         public Course newCourse { get; protected set; }
 
+        public string ButtonName { get; set; }
+        public string WindowTitle { get; set; }
+
+        //used to identify old course when "updating" course information
+        private string courseTitle = null;
+
+        //task list from old course
+        private List<Task> taskList = null;
+
         private List<Course> CourseList { get; }
         private List<string> todList = new List<string>() { "AM", "PM" };
         private List<string> tileColorsList = new List<string>()
@@ -185,23 +194,35 @@ namespace SchedulerApplication
                 "Yellow",
                 "YellowGreen"
             };
-
+        
+        //constructor for creating a addCourse window for a new course
+        //REMOVE ARGUMENT FOR COURSELIST AND JUST REFERENCE A STATIC VARIABLE IN THE MAINWINDOW?
         public AddCourse(List<Course> courseList)
         {
+            DataContext = this;
             StartHour = EndHour = 12;
             StartMin = EndMin = 0;
+            ButtonName = "Add Course";
+            WindowTitle = "Add New Course";
             InitializeComponent();
             BtnCancel.IsCancel = true;
             CourseList = courseList;
             cmb_startTOD.ItemsSource = todList;
             cmb_endTOD.ItemsSource = todList;
-            cmb_colorPicker.ItemsSource = tileColorsList;
+            cmb_colorPicker.ItemsSource = tileColorsList;          
         }
 
-        //constructor that populates the settings fields with already known values
-        public AddCourse(string courseTitle, Time startTime, Time endTime, List<string> courseDays, Color courseColor)
+        //constructor that populates the settings fields with values from pre-existing course
+        public AddCourse(string courseTitle, Time startTime, Time endTime, List<string> courseDays, Color courseColor, List<Task> courseTasks)
         {
+            DataContext = this;
+            WindowTitle = "Update Existing Course";
+            ButtonName = "Update Course";
             InitializeComponent();
+            //
+            CourseList = MainWindow.CourseList;
+            //
+            this.courseTitle = courseTitle;
             courseName.Text = courseTitle;
             txt_startHour.Text = startTime.Hour.ToString();
             txt_startMin.Text = startTime.Min.ToString();
@@ -211,6 +232,11 @@ namespace SchedulerApplication
             txt_endMin.Text = endTime.Min.ToString();
             cmb_endTOD.ItemsSource = todList;
             cmb_endTOD.SelectedIndex = todList.IndexOf(endTime.TOD);
+            StartHour = startTime.Hour;
+            StartMin = startTime.Min;
+            EndHour = endTime.Hour;
+            EndMin = endTime.Min;
+            taskList = courseTasks;
             for(int i = 0; i < courseDays.Count; i++)
             {
                 switch(courseDays[i])
@@ -234,7 +260,7 @@ namespace SchedulerApplication
             }
             cmb_colorPicker.ItemsSource = tileColorsList;
             string colorName = (typeof(Colors).GetProperties().FirstOrDefault(p => Color.AreClose(courseColor, (Color)p.GetValue(null)))).Name;
-            cmb_colorPicker.SelectedIndex = tileColorsList.IndexOf(colorName);
+            cmb_colorPicker.SelectedIndex = tileColorsList.IndexOf(colorName);          
         }
 
         private void cancelButton_click(object sender, RoutedEventArgs e)
@@ -242,9 +268,15 @@ namespace SchedulerApplication
             Close();
         }
 
-        //TODO: add a mode that will edit the object instead of try to make an entirely new one
         private void addButton_click(object sender, RoutedEventArgs e)
         {
+            //if modifying a current course then just delete the old course
+            if(courseTitle != null)
+            {
+                int index = indexOfCourse(courseTitle);
+                CourseList.RemoveAt(index);
+            }
+
             List<string> courseDays = new List<string>();
             if (M.IsChecked == true)
                 courseDays.Add("Monday");
@@ -287,7 +319,14 @@ namespace SchedulerApplication
                         //if there is a day that is selected that matches one of the courseDays check to make sure there are no collisions
                         if(courseDays[k] == CourseList[i].CourseDay[j])
                         {
-                            int mStartHour = (StartHour + ((StartHour != 12 && (string)cmb_startTOD.SelectedValue == "PM") ? 12 : 0));
+                            int mStartHour;
+                            if ((string)cmb_startTOD.SelectedValue == "PM" && StartHour == 12)
+                                mStartHour = StartHour + 12;
+                            else if ((string)cmb_startTOD.SelectedValue == "AM" && StartHour == 12)
+                                mStartHour = StartHour - 12;
+                            else
+                                mStartHour = StartHour;
+
                             int mEndHour = (EndHour + ((EndHour != 12 && (string)cmb_endTOD.SelectedValue == "PM") ? 12 : 0));
 
                             //bottom half overlapping
@@ -336,8 +375,20 @@ namespace SchedulerApplication
             }
 
             Color color = (Color)ColorConverter.ConvertFromString((string)cmb_colorPicker.SelectedValue);
-            newCourse = new Course(courseName.Text, new Time(StartHour, StartMin, (string)cmb_startTOD.SelectedValue), new Time(EndHour, EndMin, (string)cmb_endTOD.SelectedValue), new List<Task>(), courseDays, color);
+            newCourse = new Course(courseName.Text, new Time(StartHour, StartMin, (string)cmb_startTOD.SelectedValue), new Time(EndHour, EndMin, (string)cmb_endTOD.SelectedValue), taskList == null ? new List<Task>() : taskList, courseDays, color);
             DialogResult = true;
+        }
+
+        //find the index of a courseTitle in the CourseList list, returns -1 if title couldn't be found
+        //ADD TO UTILS CLASS => DUPLICATE CODE IN MAINWINDOW.CS
+        private int indexOfCourse(string title)
+        {
+            for(int i = 0; i < CourseList.Count; i++)
+            {
+                if (CourseList[i].CourseName == title)
+                    return i;
+            }
+            return -1;
         }
 
         private void printConflictingCourseMessage(string name, string day)

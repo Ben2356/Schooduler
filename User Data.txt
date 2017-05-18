@@ -1,0 +1,5 @@
+Database tech: SQL
+user data to push to the server:
+* Course Tiles - EVERYTHING
+* Settings - Time Start
+* Settings - Time End 

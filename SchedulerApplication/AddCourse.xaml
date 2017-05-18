@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchedulerApplication"
         mc:Ignorable="d"
-        Title="Add Course" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Name="addcourse_root">
+        Title="{Binding WindowTitle}" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Name="addcourse_root">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -36,21 +36,21 @@
         </Grid.Resources>
 
         <Label Grid.Row="0" Grid.Column="0" Margin="5,30,5,5" VerticalAlignment="Bottom">Course Name:</Label>
-        <TextBox Grid.Row="0" Grid.Column="2" AcceptsReturn="False" AcceptsTab="False" Margin="5,30,10,5" MaxHeight="30" Name="courseName" />
+        <TextBox Grid.Row="0" Grid.Column="2" AcceptsReturn="False" AcceptsTab="False" Margin="5,30,10,5" MaxHeight="30" Name="courseName" VerticalContentAlignment="Center"/>
         <Label Grid.Row="1" Grid.Column="0"  Margin="5">Course Start Time:</Label>
         <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Margin="10">
-            <TextBox Margin="0,0,5,0" Name="txt_startHour" Style="{StaticResource timeInput}" Text="{Binding StartHour, ElementName=addcourse_root}" />
+            <TextBox Margin="0,0,5,0" Name="txt_startHour" Style="{StaticResource timeInput}" Text="{Binding StartHour, ElementName=addcourse_root}" VerticalContentAlignment="Center"/>
             <TextBlock>:</TextBlock>
             <TextBox Margin="5,0,0,0" Name="txt_startMin" Style="{StaticResource timeInput}" Text="{Binding StartMin, ElementName=addcourse_root,
-                StringFormat={}{0:00}}" />
+                StringFormat={}{0:00}}" VerticalContentAlignment="Center"/>
             <ComboBox Name="cmb_startTOD" Margin="10,0,0,0" MinWidth="40" />
         </StackPanel>
         <Label Grid.Row="2" Grid.Column="0" Margin="5">Course End Time:</Label>
         <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Margin="10">
-            <TextBox Margin="0,0,5,0" Name="txt_endHour" Style="{StaticResource timeInput}" Text="{Binding EndHour, ElementName=addcourse_root}" />
+            <TextBox Margin="0,0,5,0" Name="txt_endHour" Style="{StaticResource timeInput}" Text="{Binding EndHour, ElementName=addcourse_root}" VerticalContentAlignment="Center"/>
             <TextBlock>:</TextBlock>
             <TextBox Margin="5,0,0,0" Name="txt_endMin" Style="{StaticResource timeInput}" Text="{Binding EndMin, ElementName=addcourse_root, 
-                StringFormat={}{0:00}}" />
+                StringFormat={}{0:00}}" VerticalContentAlignment="Center"/>
             <ComboBox Name="cmb_endTOD" Margin="10,0,0,0" MinWidth="40"/>
         </StackPanel>
         <Label Grid.Row="3" Margin="5">Course Day(s):</Label>
@@ -75,7 +75,8 @@
 
         <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.ColumnSpan="3" HorizontalAlignment="Center">
             <Button Name="BtnCancel" Margin="10,10,50,10" MinWidth="100" Click="cancelButton_click">_Cancel</Button>
-            <Button Margin="50,10,10,10" MinWidth="100" Click="addButton_click">_Add</Button>
+            <!--<Button Margin="50,10,10,10" MinWidth="100" Click="addButton_click">_Add</Button>-->
+            <Button Margin="50,10,10,10" MinWidth="100" Click="addButton_click" Content="{Binding ButtonName, ElementName=addcourse_root}"></Button>
         </StackPanel>
         
     </Grid>
