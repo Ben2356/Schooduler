@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;
 
 namespace SchedulerApplication
 {
@@ -270,11 +271,22 @@ namespace SchedulerApplication
 
         private void addButton_click(object sender, RoutedEventArgs e)
         {
-            //if modifying a current course then just delete the old course
-            if(courseTitle != null)
+            MySqlCommand cmd;
+
+            //if modifying a current course then just delete the old course and remove the old corresponding table entries
+            if (courseTitle != null)
             {
                 int index = indexOfCourse(courseTitle);
                 CourseList.RemoveAt(index);
+
+                //delete from tasks table
+                cmd = new MySqlCommand("DELETE FROM tasks WHERE course_id = (SELECT course_id FROM courses WHERE course_name = " + "\"" + courseTitle + "\"))", Login.conn);
+
+                //delete from days table
+                cmd = new MySqlCommand("DELETE FROM days WHERE course_id = (SELECT course_id FROM courses WHERE course_name = " + "\"" + courseTitle + "\"))", Login.conn);
+
+                //delete from courses table
+                cmd = new MySqlCommand("DELETE FROM courses WHERE course_name = " + "\"" + courseTitle + "\"", Login.conn);
             }
 
             List<string> courseDays = new List<string>();
@@ -375,7 +387,32 @@ namespace SchedulerApplication
             }
 
             Color color = (Color)ColorConverter.ConvertFromString((string)cmb_colorPicker.SelectedValue);
-            newCourse = new Course(courseName.Text, new Time(StartHour, StartMin, (string)cmb_startTOD.SelectedValue), new Time(EndHour, EndMin, (string)cmb_endTOD.SelectedValue), taskList == null ? new List<Task>() : taskList, courseDays, color);
+            Time start = new Time(StartHour, StartMin, (string)cmb_startTOD.SelectedValue);
+            Time end = new Time(EndHour, EndMin, (string)cmb_endTOD.SelectedValue);
+            newCourse = new Course(courseName.Text, start, end, taskList == null ? new List<Task>() : taskList, courseDays, color);
+
+            //push the course to the courses table
+            cmd = new MySqlCommand("INSERT INTO courses(course_id,course_name,time_start,time_end,tile_color) VALUES (NULL," + "\"" + courseName.Text + "\",\"" + start.ToString() + "\",\"" + end.ToString() + "\",\"" + color.ToString() + "\")", Login.conn);
+            cmd.ExecuteNonQuery();
+
+            //push days to the days table
+            for (int i = 0; i < courseDays.Count; i++)
+            {
+                cmd = new MySqlCommand("INSERT INTO days(day_id,course_id,day) VALUES (NULL,(SELECT course_id FROM courses WHERE course_name = " + "\"" + courseName.Text + "\"),\"" + courseDays[i] + "\")", Login.conn);
+                cmd.ExecuteNonQuery();
+            }
+
+            //if this operation is an update then need to add the old taskList
+            if (courseTitle != null)
+            {
+                for(int i = 0; i < taskList.Count; i++)
+                {
+                    string dateTimeStr = string.Format("{0yyyy-MM-dd HH:mm:ss}", taskList[i].Due);
+                    cmd = new MySqlCommand("INSERT INTO tasks(task_id,course_id,completed,assignment_name,due,notes) VALUES (NULL,(SELECT course_id FROM courses WHERE course_name = " + "\"" + courseName.Text + "\")," + (taskList[i].Completed ? 1 : 0) + ",\"" + taskList[i].Assignment + "\",\"" + dateTimeStr + "\",\"" + taskList[i].Notes + "\")", Login.conn);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+                        
             DialogResult = true;
         }
 

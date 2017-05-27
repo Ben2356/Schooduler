@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using MySql.Data.MySqlClient;
 
 namespace SchedulerApplication
 {
@@ -28,8 +29,8 @@ namespace SchedulerApplication
         public static string GridColCreate { get; set; }
         public static string ViewingWeek { get; set; }
         public static List<Course> CourseList { get; set; }
-        public List<Time> timeRange;
-        public List<string> dayList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+        public static List<Time> timeRange;
+        public static List<string> dayList = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
         public static List<int> weekViewDayList { get; set; }
 
         //constructor
@@ -67,6 +68,23 @@ namespace SchedulerApplication
             ViewingWeek = DateTime.Now.Month + "/" + weekOfDay + "/" + DateTime.Now.Year;
             CourseList = new List<Course>();
             InitializeComponent();
+
+            //server connection is established, if there is data to retrieve do it before drawing the grid
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM courses", Login.conn);
+            MySqlDataReader read = cmd.ExecuteReader();
+            while(read.Read())
+            {
+                //Console.WriteLine(read["course_id"]);
+                string courseName = read["course_name"].ToString();
+                string timeStartStr = read["time_start"].ToString();
+                string timeEndStr = read["time_end"].ToString();
+                string courseColorStr = read["tile_color"].ToString();
+                List<string> courseDays = new List<string>();
+                
+                Console.WriteLine(courseName + " " + timeStartStr + " " + timeEndStr + " " + courseColorStr);
+            }
+            read.Close();
+
             timeRange = GridBuilders.drawGridRowTimes(gv_weekView);
             GridBuilders.drawColDayHeaders(gv_weekView,dayList);    
             Loaded += delegate

@@ -1,5 +1,53 @@
-Database tech: SQL
-user data to push to the server:
-* Course Tiles - EVERYTHING
-* Settings - Time Start
-* Settings - Time End 
+Database tech: mySQL
+user data to push to the server will be only the course tiles
+settings are saved to local machine only
+
+**long run: will have to have an account creation system so data stored is related to a specific user
+
+Course Tile Data:
+CourseName (string)
+TimeStart (Time)
+TimeEnd (Time)
+TileColor (Color)
+TaskList (List<Task>)
+CourseDay (List<string>)
+relatedButtons (List<ToggleButton>)  => going to need to find alternate method of having related buttons
+
+relatedButtons ideas: 
+array will still exist but be stored locally and not within the course Tile Data, creation will still be
+the same however when the CourseTile data is read from the database, new relatedButtons array will have 
+to be built based off the size of the CourseDay array during the assembly of the CourseList array
+
+Task object contains:
+bool completed
+string assignment
+DateTime due
+string notes
+
+
+DB Schema:
+* is the primary key
+
+Courses Table: 
+course_id (int unsigned)*	#unique course ID
+course_name (varchar(16))	#course names are limited to only 16 chars
+time_start (varchar(16))	#serialize Time object into a string
+time_end (varchar(16))		#^^
+tile_color (varchar(16))	#serialize Color object into a string using ColorConverter
+
+Days Table:
+day_id* (int unsigned)		#unique day ID
+course_id (int unsigned)	#all days in this table are mapped to a respective course_id
+day (varchar(16))		#name of the day
+
+Tasks Table:
+task_id (int unsigned)*		#unique task ID
+course_id (int unsigned)	#all tasks in this table are mapped to a respective course_id 
+completed (tinyint unsigned)	#0 = false, 1 = true
+assignment_name (varchar(32))	#
+due (datetime)			#
+notes (varchar(128))		#
+
+Users Table:
+user_id (int unsigned)		#unique user ID
+username (varchar(16))		#user name
