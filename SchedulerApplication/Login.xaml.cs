@@ -43,13 +43,14 @@ namespace SchedulerApplication
             //temporarily bypass entire user login system for dev purposes
             string sqlPassword = "";
             string connStr = "server=localhost;user=root;database=schoodulerTest;port=3306;password="+sqlPassword;
-
+            bool validLogin = true;
             try
             {
                 conn = new MySqlConnection(connStr);
                 conn.Open();
             } catch(MySqlException ex)
             {
+                validLogin = false;
                 switch(ex.Number)
                 {
                     case 0:
@@ -61,7 +62,8 @@ namespace SchedulerApplication
                         break;
                 }
             }
-            DialogResult = true;
+            if(validLogin)
+                DialogResult = true;
         }
     }
 }

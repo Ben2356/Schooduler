@@ -81,17 +81,7 @@ namespace SchedulerApplication
             this.hour = hour;
             this.min = min;
             this.tod = tod;
-
-            //NEED TO MAKE A UTILS FUNCTION TO REDUCE DUPLICATE CODE
-            //cases that time is not 12 and is PM then need to add 12 to military hour
-            if (tod == "PM" && hour != 12)
-                militaryTimeHour = hour + 12;
-            //cases that time is 12 AM then need to set military hour to 0
-            else if (tod == "AM" && hour == 12)
-                militaryTimeHour = hour - 12;
-            //all other times that are AM need nothing added to the military hour
-            else
-                militaryTimeHour = hour;
+            militaryTimeHour = Utils.toMilitaryHour(hour, tod);
         }
 
         public override string ToString()
@@ -116,52 +106,6 @@ namespace SchedulerApplication
             else
                 strTime += min;
             return strTime + " " + tod;
-        }
-    }
-
-    public static class Utils
-    {
-        public static void parseTimeString(string input, out int hour, out int min, out string tod)
-        {
-            int colonLoc = input.IndexOf(':');
-            int spaceLoc = input.IndexOf(' ');
-            hour = int.Parse(input.Substring(0, colonLoc));
-            min = int.Parse(input.Substring(colonLoc + 1, spaceLoc - colonLoc));
-            tod = input.Substring(spaceLoc + 1);
-        }
-
-        public static void parseTimeString(string input, out int hour, out int min, out string tod, out int militaryHour)
-        {
-            int colonLoc = input.IndexOf(':');
-            int spaceLoc = input.IndexOf(' ');
-            hour = int.Parse(input.Substring(0, colonLoc));
-            min = int.Parse(input.Substring(colonLoc + 1, spaceLoc - colonLoc));
-            tod = input.Substring(spaceLoc + 1);
-            //militaryHour = (tod == "PM" && hour != 12 ? hour + 12 : hour);
-
-            //cases that time is not 12 and is PM then need to add 12 to military hour
-            if (tod == "PM" && hour != 12)
-                militaryHour = hour + 12;
-            //casses that time is 12 AM then need to set military hour to 0
-            else if (tod == "AM" && hour == 12)
-                militaryHour = hour - 12;
-            //all other times that are AM need nothing added to the military hour
-            else
-                militaryHour = hour;
-        }
-
-        public static int getMilitaryHour(string input)
-        {
-            int colonLoc = input.IndexOf(':');
-            int hour = int.Parse(input.Substring(0, colonLoc));
-            int spaceLoc = input.IndexOf(' ');
-            string tod = input.Substring(spaceLoc + 1);
-            if (tod == "PM" && hour != 12)
-                return (hour += 12);
-            else if (tod == "AM" && hour == 12)
-                return 0;
-            else
-                return hour;
         }
     }
 }

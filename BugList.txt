@@ -1,0 +1,3 @@
+* Days on weekview not accurately switching to new month and day when the end of month day has been reached
+* Course names are not checked for uniqueness leading to problematic database lookup behavior
+* 

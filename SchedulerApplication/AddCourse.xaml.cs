@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MySql.Data.MySqlClient;
+using System.ComponentModel;
 
 namespace SchedulerApplication
 {
@@ -21,10 +22,7 @@ namespace SchedulerApplication
     public partial class AddCourse : Window
     {
 
-        private void hourValueError()
-        {
-            MessageBox.Show("Invalid Hour Value!\nPlease enter an hour that is between 1 and 12 inclusive.", "Invalid Hour Value", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        
 
         private int startHour;
         public int StartHour
@@ -36,7 +34,7 @@ namespace SchedulerApplication
             set
             {
                 if (value > 12 || value <= 0)
-                    hourValueError();
+                    Utils.hourValueError();
                 else
                     startHour = value;
             }
@@ -52,15 +50,10 @@ namespace SchedulerApplication
             set
             {
                 if (value > 12 || value <= 0)
-                    hourValueError();
+                    Utils.hourValueError();
                 else
                     endHour = value;
             }
-        }
-
-        private void minValueError()
-        {
-            MessageBox.Show("Invalid Minute Value!\nPlease enter a minute that is between 1 and 59 inclusive.", "Invalid Minute Value", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private int startMin;
@@ -73,7 +66,7 @@ namespace SchedulerApplication
             set
             {
                 if (value >= 60)
-                    minValueError();
+                    Utils.minuteValueError();
                 else
                     startMin = value;
             }
@@ -89,7 +82,7 @@ namespace SchedulerApplication
             set
             {
                 if (value >= 60)
-                    minValueError();
+                    Utils.minuteValueError();
                 else
                     endMin = value;
             }
@@ -105,7 +98,7 @@ namespace SchedulerApplication
         private string courseTitle = null;
 
         //task list from old course
-        private List<Task> taskList = null;
+        private BindingList<Task> taskList = null;
 
         private List<Course> CourseList { get; }
         private List<string> todList = new List<string>() { "AM", "PM" };
@@ -214,7 +207,7 @@ namespace SchedulerApplication
         }
 
         //constructor that populates the settings fields with values from pre-existing course
-        public AddCourse(string courseTitle, Time startTime, Time endTime, List<string> courseDays, Color courseColor, List<Task> courseTasks)
+        public AddCourse(string courseTitle, Time startTime, Time endTime, List<string> courseDays, Color courseColor, BindingList<Task> courseTasks)
         {
             DataContext = this;
             WindowTitle = "Update Existing Course";
@@ -276,7 +269,7 @@ namespace SchedulerApplication
             //if modifying a current course then just delete the old course and remove the old corresponding table entries
             if (courseTitle != null)
             {
-                int index = indexOfCourse(courseTitle);
+                int index = Utils.indexOfCourse(courseTitle);
                 CourseList.RemoveAt(index);
 
                 //delete from tasks table
@@ -302,7 +295,7 @@ namespace SchedulerApplication
                 courseDays.Add("Friday");
             if (courseName.Text == "" || cmb_startTOD.SelectedValue == null || cmb_endTOD.SelectedValue == null || courseDays.Count == 0 || cmb_colorPicker.SelectedValue == null)
             {
-                MessageBox.Show("Please fill in all fields before preceding!", "Unfilled Fields", MessageBoxButton.OK, MessageBoxImage.Error);
+                Utils.unfilledError();
                 return;
             }
 
@@ -311,6 +304,8 @@ namespace SchedulerApplication
                 MessageBox.Show("Start and end times are the same!", "Same Times", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            //TODO: check to make sure course name is unique
 
             //make sure class is not going back in time
             if(StartHour == EndHour && cmb_startTOD.SelectedValue == cmb_endTOD.SelectedValue && StartMin > EndMin)
@@ -389,7 +384,7 @@ namespace SchedulerApplication
             Color color = (Color)ColorConverter.ConvertFromString((string)cmb_colorPicker.SelectedValue);
             Time start = new Time(StartHour, StartMin, (string)cmb_startTOD.SelectedValue);
             Time end = new Time(EndHour, EndMin, (string)cmb_endTOD.SelectedValue);
-            newCourse = new Course(courseName.Text, start, end, taskList == null ? new List<Task>() : taskList, courseDays, color);
+            newCourse = new Course(courseName.Text, start, end, taskList == null ? new BindingList<Task>() : taskList, courseDays, color);
 
             //push the course to the courses table
             cmd = new MySqlCommand("INSERT INTO courses(course_id,course_name,time_start,time_end,tile_color) VALUES (NULL," + "\"" + courseName.Text + "\",\"" + start.ToString() + "\",\"" + end.ToString() + "\",\"" + color.ToString() + "\")", Login.conn);
@@ -414,18 +409,6 @@ namespace SchedulerApplication
             }
                         
             DialogResult = true;
-        }
-
-        //find the index of a courseTitle in the CourseList list, returns -1 if title couldn't be found
-        //ADD TO UTILS CLASS => DUPLICATE CODE IN MAINWINDOW.CS
-        private int indexOfCourse(string title)
-        {
-            for(int i = 0; i < CourseList.Count; i++)
-            {
-                if (CourseList[i].CourseName == title)
-                    return i;
-            }
-            return -1;
         }
 
         private void printConflictingCourseMessage(string name, string day)

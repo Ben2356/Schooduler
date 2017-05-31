@@ -40,3 +40,5 @@ D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\bin\Debug\MySql.
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\bin\Debug\MySql.Data.xml
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Login.g.cs
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Login.baml
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\AddTask.g.cs
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\AddTask.baml

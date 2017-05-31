@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SchedulerApplication"
         mc:Ignorable="d"
-        Title="Schooduler" Height="auto" Width="auto" Name="root">
+        Title="Schooduler" Height="800" Width="auto" Name="root" WindowStartupLocation="CenterScreen">
     <Window.CommandBindings>
         <CommandBinding Command="local:CustomCommands.Exit" CanExecute="exitCommand_CanExecute" Executed="exitCommand_Executed" />
         <CommandBinding Command="local:CustomCommands.Settings" CanExecute="settingsCommand_CanExecute" Executed="settingsCommand_Executed" />
@@ -18,7 +18,6 @@
         </ContextMenu>
     </Window.Resources>
 
-    <!--NEED TO REMOVE DOCKPANEL IN FAVOR OF GRID FOR AUTO RESIZING CAPABILITIES-->
     <DockPanel>
         <StackPanel DockPanel.Dock="Top">
             <Menu>
@@ -41,13 +40,10 @@
 
         <Grid Margin="5">
             <Grid.RowDefinitions>
-                <!--<RowDefinition Height="550" />-->
-                <!--<RowDefinition Height="Auto" />-->
-                <!--<RowDefinition Height="*" />-->
-                <!--MinHeight is temporary solution to sizing issues until proper resizing is implemented with gridview-->
-                <RowDefinition Height="Auto" MinHeight="400"/>
+                <RowDefinition Height="*" MinHeight="250"/>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" MinHeight="150"/>
+                <RowDefinition Height="*" MaxHeight="150"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -103,23 +99,24 @@
             </local:ExtendedGrid>
 
             <!-- Add course button-->
-            <Button Name="add_course_button" Padding="2" Margin="0,2,30,2" HorizontalAlignment="Right" Grid.Row="1" MaxHeight="30"
-                    Click="addCourseButton_Click">Add Course</Button>
-
+            <Button Name="add_course_button" Padding="2" Margin="0,2,30,2" HorizontalAlignment="Right" Grid.Row="1" MaxHeight="30" Click="addCourseButton_Click">Add Course</Button>
 
             <!--Task view window -->
-            <DataGrid Grid.Row="2" Margin="30" Name="dg_tasks" AutoGenerateColumns="False" >
+            <DataGrid Grid.Row="2" Margin="30,30,30,10" Name="dg_tasks" AutoGenerateColumns="False" AlternatingRowBackground="Gainsboro" CellEditEnding="dg_tasks_CellEditEnding" CanUserAddRows="False">
                 <DataGrid.Resources>
                     <local:FullDateToMonthDay x:Key="FullDateToMonthDay" />
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Header="Finished" Binding="{Binding Completed}" />
-                    <DataGridTextColumn Header="Assignment" Binding="{Binding Assignment}" Width="*"/>
+                    <DataGridTextColumn Header="Assignment" Binding="{Binding Assignment}" Width="*" />
                     <DataGridTextColumn Header="Due" Binding="{Binding Due, Converter={StaticResource FullDateToMonthDay}}" />
-                    <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*"/>
+                    <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
+            
+            <!-- Add new task button-->
+            <Button Name="add_task_button" Padding="2" Margin="0,2,30,2" HorizontalAlignment="Right" Grid.Row="3" MaxHeight="30" Click="newTaskButton_Click" IsEnabled="False">New Task</Button>
         </Grid>
     </DockPanel>
 </Window>

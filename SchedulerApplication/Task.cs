@@ -9,6 +9,14 @@ namespace SchedulerApplication
     //task class for storing tasks for a course
     public class Task
     {
+        public Task(bool isCompleted, string assignmentName, DateTime dueDate, string assignmentNotes)
+        {
+            completed = isCompleted;
+            Assignment = assignmentName;
+            Due = dueDate;
+            Notes = assignmentNotes;
+        }
+
         private bool completed;
         public Task()
         {

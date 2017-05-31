@@ -59,6 +59,9 @@
     <Compile Include="AddCourse.xaml.cs">
       <DependentUpon>AddCourse.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddTask.xaml.cs">
+      <DependentUpon>AddTask.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ButtonProperties.cs" />
     <Compile Include="Course.cs" />
     <Compile Include="CustomCommands.cs" />
@@ -73,7 +76,12 @@
     </Compile>
     <Compile Include="Task.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="Utils.cs" />
     <Page Include="AddCourse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTask.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace SchedulerApplication
         public Time TimeStart { get; set; }
         public Time TimeEnd { get; set; }
         public Color TileColor { get; set; }
-        public List<Task> TaskList { get; set; }
+        public BindingList<Task> TaskList { get; set; }
         public List<string> CourseDay { get; set; }
         public List<ToggleButton> relatedButtons { get; set; }
 
@@ -24,7 +25,7 @@ namespace SchedulerApplication
         {
         }
 
-        public Course(string name, Time timeStart, Time timeEnd, List<Task> tasks, List<string> days, Color color)
+        public Course(string name, Time timeStart, Time timeEnd, BindingList<Task> tasks, List<string> days, Color color)
         {
             CourseName = name;
             TimeStart = timeStart;

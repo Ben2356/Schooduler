@@ -71,19 +71,51 @@ namespace SchedulerApplication
 
             //server connection is established, if there is data to retrieve do it before drawing the grid
             MySqlCommand cmd = new MySqlCommand("SELECT * FROM courses", Login.conn);
-            MySqlDataReader read = cmd.ExecuteReader();
-            while(read.Read())
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            //tuple represents course_name, time_start, time_end, and tile_color
+            List<Tuple<string,string,string,string>> records = new List<Tuple<string,string,string,string>>();
+
+            //construct a tuple for each record retrieved from database
+            while(reader.Read())
             {
-                //Console.WriteLine(read["course_id"]);
-                string courseName = read["course_name"].ToString();
-                string timeStartStr = read["time_start"].ToString();
-                string timeEndStr = read["time_end"].ToString();
-                string courseColorStr = read["tile_color"].ToString();
-                List<string> courseDays = new List<string>();
-                
-                Console.WriteLine(courseName + " " + timeStartStr + " " + timeEndStr + " " + courseColorStr);
+                records.Add(new Tuple<string, string, string, string>(reader["course_name"].ToString(), reader["time_start"].ToString(), reader["time_end"].ToString(), reader["tile_color"].ToString()));
             }
-            read.Close();
+            reader.Close();
+
+            foreach(Tuple<string,string,string,string> rec in records)
+            {
+                string courseName = rec.Item1;
+                
+                //get the day entries for the corresponding course
+                List<string> courseDays = new List<string>();
+                cmd = new MySqlCommand("SELECT day FROM days WHERE course_id = (SELECT course_id FROM courses WHERE course_name = \"" + courseName + "\")", Login.conn);
+                reader = cmd.ExecuteReader();
+                while(reader.Read())
+                {
+                    courseDays.Add(reader["day"].ToString());
+                }
+                reader.Close();
+
+                //get the task entries for the corresponding course
+                BindingList<Task> taskList = new BindingList<Task>();
+                Task t;
+                cmd = new MySqlCommand("SELECT * FROM tasks WHERE course_id = (SELECT course_id FROM courses WHERE course_name = \"" + courseName + "\")", Login.conn);
+                reader = cmd.ExecuteReader();
+                while(reader.Read())
+                {
+                    t = new Task((int.Parse(reader["completed"].ToString()) == 0 ? false : true), reader["assignment_name"].ToString(), Utils.convertSQLDateTime(reader["due"].ToString()), reader["notes"].ToString());
+                    taskList.Add(t);
+                }
+                reader.Close();
+
+                //build and add the course object
+                Time start = new Time(rec.Item2);
+                Time end = new Time(rec.Item3);
+                Color tileColor = (Color)(ColorConverter.ConvertFromString(rec.Item4));
+                Course course = new Course(courseName, start, end, taskList, courseDays, tileColor);
+                CourseList.Add(course);
+            }
 
             timeRange = GridBuilders.drawGridRowTimes(gv_weekView);
             GridBuilders.drawColDayHeaders(gv_weekView,dayList);    
@@ -100,6 +132,7 @@ namespace SchedulerApplication
 
         private void exitCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            Login.conn.Close();
             Application.Current.Shutdown();
         }
 
@@ -125,8 +158,19 @@ namespace SchedulerApplication
             }               
         }
 
+        private void taskList_AddingNew(object sender, AddingNewEventArgs e)
+        {
+            //MessageBox.Show("TEST!");
+        }
+
+        private void taskList_ListChanged(object sender, ListChangedEventArgs e)
+        {
+           //MessageBox.Show("MODIFY TEST!");
+        }
+
         private bool isRefCall = false;
         private ToggleButton prevSelectedButton;
+        private string tileName = null;
 
         private void courseTile_Clicked(object sender, RoutedEventArgs e)
         {
@@ -135,10 +179,14 @@ namespace SchedulerApplication
             if (isRefCall)
                 return;
             ToggleButton btn = sender as ToggleButton;
-            List<Task> list = btn.GetValue(ButtonProperties.TaskListProperty) as List<Task>;
+            BindingList<Task> list = btn.GetValue(ButtonProperties.TaskListProperty) as BindingList<Task>;
+            list.AddingNew += taskList_AddingNew;
+            list.ListChanged += taskList_ListChanged;
             dg_tasks.ItemsSource = list;
             toggleButtonState(btn);
             prevSelectedButton = btn;
+            add_task_button.IsEnabled = true;
+            tileName = btn.Content.ToString();
         }
 
         private void courseTile_Unclicked(object sender, RoutedEventArgs e)
@@ -149,12 +197,13 @@ namespace SchedulerApplication
             ToggleButton btn = sender as ToggleButton;
             toggleButtonState(btn);
             prevSelectedButton = null;
+            add_task_button.IsEnabled = false;
         }
 
         //toggles all the buttons in the course's state except the selected button
         private void toggleButtonState(ToggleButton btn)
         {
-            int selectedCourseIndex = indexOfCourse((string)btn.Content);
+            int selectedCourseIndex = Utils.indexOfCourse((string)btn.Content);
             if(CourseList[selectedCourseIndex].relatedButtons == null)
                 return;          
             else
@@ -170,16 +219,7 @@ namespace SchedulerApplication
             isRefCall = false;
         }
 
-        //returns the index of a specific course name within a List<Course> object or if the specified course doesn't exist -1 is returned
-        private int indexOfCourse(string courseName)
-        {
-            for(int i = 0; i < CourseList.Count; i++)
-            {
-                if (CourseList[i].CourseName == courseName)
-                    return i;
-            }
-            return -1;
-        }
+        
 
         private void addCourseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -196,7 +236,7 @@ namespace SchedulerApplication
             var menuitem = sender as MenuItem;
             var contextmenu = menuitem.Parent as ContextMenu;
             ToggleButton btn = ContextMenuService.GetPlacementTarget(contextmenu) as ToggleButton;
-            Course editTarget = CourseList[indexOfCourse((string)btn.Content)];
+            Course editTarget = CourseList[Utils.indexOfCourse((string)btn.Content)];
 
             //need to force unclick of clicked buttons
             btn.IsChecked = false;
@@ -216,14 +256,25 @@ namespace SchedulerApplication
             var menuitem = sender as MenuItem;
             var contextmenu = menuitem.Parent as ContextMenu;
             ToggleButton btn = ContextMenuService.GetPlacementTarget(contextmenu) as ToggleButton;
-            Course deleteCourse = CourseList[indexOfCourse((string)btn.Content)];
+            Course deleteCourse = CourseList[Utils.indexOfCourse((string)btn.Content)];
             CourseList.Remove(deleteCourse);
             timeRange = GridBuilders.drawGridRowTimes(gv_weekView);
             GridBuilders.drawColDayHeaders(gv_weekView, dayList);
             GridBuilders.drawCourses(gv_weekView, CourseList, timeRange, dayList);
             dg_tasks.ItemsSource = null;
         }
-    } 
+
+        private void dg_tasks_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            //MessageBox.Show("edit ending");
+        }
+
+        private void newTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddTask newTaskWindow = new AddTask(dg_tasks.ItemsSource as BindingList<Task>, tileName);
+            newTaskWindow.ShowDialog();
+        }
+    }
 
     public class FullDateToMonthDay : IValueConverter
     {

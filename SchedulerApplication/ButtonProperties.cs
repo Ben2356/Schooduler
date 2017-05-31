@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +11,14 @@ namespace SchedulerApplication
 {
     class ButtonProperties
     {
-        public static readonly DependencyProperty TaskListProperty = DependencyProperty.Register("TaskList", typeof(List<Task>), typeof(ButtonProperties));
+        public static readonly DependencyProperty TaskListProperty = DependencyProperty.Register("TaskList", typeof(BindingList<Task>), typeof(ButtonProperties));
 
-        public static List<Task> GetTaskList(UIElement e)
+        public static BindingList<Task> GetTaskList(UIElement e)
         {
-            return (List<Task>)e.GetValue(TaskListProperty);
+            return (BindingList<Task>)e.GetValue(TaskListProperty);
         }
 
-        public static void SetTaskList(UIElement e, List<Task> data)
+        public static void SetTaskList(UIElement e, BindingList<Task> data)
         {
             e.SetValue(TaskListProperty, data);
         }
