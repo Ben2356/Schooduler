@@ -65,5 +65,11 @@ namespace SchedulerApplication
             if(validLogin)
                 DialogResult = true;
         }
+
+        private void Register_Click(object sender, RoutedEventArgs e)
+        {
+            Register registerWindow = new Register();
+            registerWindow.ShowDialog();
+        }
     }
 }

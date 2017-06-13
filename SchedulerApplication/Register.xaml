@@ -1,0 +1,78 @@
+﻿<Window x:Class="SchedulerApplication.Register"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SchedulerApplication"
+        mc:Ignorable="d"
+        Title="Create New Account" Height="500" Width="400" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition MaxHeight="50" Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style x:Key="textTag" TargetType="TextBlock">
+                <Setter Property="Margin" Value="20,0,0,0"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            <Style x:Key="inputTextBox" TargetType="TextBox">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="AcceptsReturn" Value="False"/>
+                <Setter Property="AcceptsTab" Value="False"/>
+                <Setter Property="MaxHeight" Value="30"/>
+                <Setter Property="Margin" Value="20,0,10,20"/>
+                <Setter Property="MinWidth" Value="200" />
+            </Style>
+            <Style x:Key="statusMessage" TargetType="TextBlock">
+                <Setter Property="MinHeight" Value="20" />
+                <Setter Property="Foreground" Value="Red"/>
+                <Setter Property="Margin" Value="20,0,0,0"/>
+                <Setter Property="FontSize" Value="10"/>
+            </Style>
+        </Grid.Resources>
+
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="20,15,20,10">Create New User Account</TextBlock>
+        
+        <TextBlock Grid.Row="2" Style="{StaticResource textTag}">Username: <Run FontSize="9" Text="(should be at least 4 characters and contain no special characters)"/></TextBlock>
+        <TextBlock Grid.Row="3" Name="statusUsernameTextBlock" Style="{StaticResource statusMessage}" />
+        <TextBox Grid.Row="4" Name="usernameTextBox" Style="{StaticResource inputTextBox}" ></TextBox>
+        
+        <TextBlock Grid.Row="5" Style="{StaticResource textTag}">Password: <Run FontSize="9" Text="(should be at least 6 characters)"/></TextBlock>
+        <TextBlock Grid.Row="6" Name="statusPasswordTextBlock" Style="{StaticResource statusMessage}" />
+
+        <TextBox Grid.Row="7" Name="readablePasswordBox" Visibility="Hidden" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="30" Margin="20,0,10,0" MinWidth="200" />
+        <StackPanel Grid.Row="7" Orientation="Horizontal" Margin="0,0,0,20">
+            <PasswordBox Name="passwordTextBox" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="30" Margin="20,0,10,0" MinWidth="200" />
+            <CheckBox Name="showPassCheckBox" VerticalAlignment="Top" Margin="0,2,0,0" FontSize="10" Checked="showPassCheckBox_Checked" Unchecked="showPassCheckBox_Unchecked">Show Password</CheckBox>
+        </StackPanel>
+
+        <TextBlock Grid.Row="8" Style="{StaticResource textTag}">Confirm Password:</TextBlock>
+        <TextBlock Grid.Row="9" Name="statusConfirmPasswordTextBlock" Style="{StaticResource statusMessage}" />
+        <PasswordBox Grid.Row="10" Name="confirmPasswordTextBox" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="30" Margin="20,0,0,20" MinWidth="200" />
+
+        <TextBlock Grid.Row="11" Style="{StaticResource textTag}">Email:</TextBlock>
+        <TextBlock Grid.Row="12" Name="statusEmailTextBlock" Style="{StaticResource statusMessage}" />
+        <TextBox Grid.Row="13" Name="emailTextBox" Style="{StaticResource inputTextBox}"></TextBox>
+        <StackPanel Grid.Row="14" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button MinHeight="20" MinWidth="80" MaxWidth="100" Margin="20,20,30,20" Click="cancel_Click">_Cancel</Button>
+            <Button MinHeight="20" MinWidth="80" MaxWidth="100" Margin="40,20,30,20" Click="register_Click">_Register</Button>
+        </StackPanel>
+    </Grid>
+</Window>

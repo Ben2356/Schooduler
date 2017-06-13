@@ -42,3 +42,5 @@ D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Login.
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Login.baml
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\AddTask.g.cs
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\AddTask.baml
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Register.g.cs
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Register.baml

@@ -1,0 +1,10 @@
+FEATURES
+--------
+
+* Ability to scroll to next/previous week to view that schedule
+* Ability to store non course related tiles into the weekview for events such as exams, meetings, etc
+* Highlighting of due dates that are approaching in task view part of main window, red for 24 hrs, orange for 48 hours
+* User can select to be notified by email on approaching assignments???
+* Main window will feature a notification bar that will show upcoming assignments from classes???
+* ALTERNATIVE TO ABOVE: each course tile will have an exclamation point icon that pops up if something is upcoming
+* 
