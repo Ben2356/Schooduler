@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;
 
 namespace SchedulerApplication
 {
@@ -29,7 +30,18 @@ namespace SchedulerApplication
         //returns whether the username is already present in the database
         private bool usernameTaken(string user)
         {
-            return false;
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM users WHERE username = \"" + user + "\"", Login.conn);
+            MySqlDataReader r = cmd.ExecuteReader();
+            if (r.Read())
+            {
+                r.Close();
+                return true;
+            }
+            else
+            {
+                r.Close();
+                return false;
+            }
         }
 
         //GOING TO NEED A MUCH MORE EXTENSIVE WAY TO VALIDATE EMAIL ADDRESSES
@@ -50,6 +62,17 @@ namespace SchedulerApplication
 
         private void register_Click(object sender, RoutedEventArgs e)
         {
+            //force last minute sync to keep both the visible password and hidden password the same
+            if (showPassCheckBox.IsChecked == true)
+            {
+                passwordTextBox.Password = readablePasswordBox.Text;
+            }
+            else
+            {
+                readablePasswordBox.Text = passwordTextBox.Password;
+            }
+
+            bool isInvalid = false;
             statusUsernameTextBlock.Text = "";
             statusPasswordTextBlock.Text = "";
             statusConfirmPasswordTextBlock.Text = "";
@@ -59,43 +82,60 @@ namespace SchedulerApplication
             if (usernameTextBox.Text.Length < 4)
             {
                 statusUsernameTextBlock.Text = "Username too short!";
+                isInvalid = true;
             }
             else if (!Regex.IsMatch(usernameTextBox.Text,"^[a-zA-Z0-9_]+$"))
             {
                 statusUsernameTextBlock.Text = "Invalid characters!";
-            }
-            else if(usernameTaken(usernameTextBox.Text))
-            {
-                statusUsernameTextBlock.Text = "Username taken!";
+                isInvalid = true;
             }
 
             //check to see if the password is valid
             if(passwordTextBox.Password.Length < 6)
             {
                 statusPasswordTextBlock.Text = "Password too short!";
+                isInvalid = true;
             }
             
             //validate that both the passwords are the same
             if(confirmPasswordTextBox.Password == "")
             {
                 statusConfirmPasswordTextBlock.Text = "Empty password field!";
+                isInvalid = true;
             }
             else if(passwordTextBox.Password != confirmPasswordTextBox.Password)
             {
                 statusConfirmPasswordTextBlock.Text = "Passwords don't match!";
+                isInvalid = true;
             }
 
             //check to see if the email address is valid
             if(!isValidEmail(emailTextBox.Text))
             {
                 statusEmailTextBlock.Text = "Please enter a valid email address!";
+                isInvalid = true;
             }
 
-            //**obvious security flaw when creating a new user by programming in the root the account to create the new user - 
-            //better way might be to send a signal to a script on the same machine as the server and the script will run the root user to build the new
-            //account, a level of indirection
+            if(!isInvalid)
+            {
 
+                //check to see that the username isn't already in use
+                if (usernameTaken(usernameTextBox.Text))
+                {
+                    statusUsernameTextBlock.Text = "Username taken!";
+                    return;
+                }
 
+                //encrypt user passwords before storing them into the users database table
+                byte[] key = Utils.generateEncryptedBytes();
+                byte[] iv = Utils.generateEncryptedBytes();
+                string encryptedPass = Utils.encryptString(passwordTextBox.Password,key,iv);
+
+                MySqlCommand cmd = new MySqlCommand("INSERT INTO users (user_id,username,password,email) VALUES (NULL,\"" + usernameTextBox.Text + "\",\"" + encryptedPass + "\",\"" + emailTextBox.Text + "\")", Login.conn);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("User account created successfully!", "User Creation Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                DialogResult = true;
+            }
         }
 
         private void cancel_Click(object sender, RoutedEventArgs e)

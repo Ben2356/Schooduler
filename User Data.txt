@@ -34,6 +34,7 @@ course_name (varchar(16))	#course names are limited to only 16 chars
 time_start (varchar(16))	#serialize Time object into a string
 time_end (varchar(16))		#^^
 tile_color (varchar(16))	#serialize Color object into a string using ColorConverter
+user_id (int unsigned)		#user id who this course belongs to
 
 Days Table:
 day_id* (int unsigned)		#unique day ID
@@ -49,5 +50,7 @@ due (datetime)			#
 notes (varchar(128))		#
 
 Users Table:
-user_id (int unsigned)		#unique user ID
+user_id (int unsigned)*		#unique user ID
 username (varchar(16))		#user name
+password (varchar(32))		#user password => will need to be encrypted
+email (varchar(32))		#user email address for password recovery

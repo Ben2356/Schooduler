@@ -14,16 +14,23 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" HorizontalAlignment="Center" Margin="20,15,20,10"> Sign in or create a new account</TextBlock>
         <TextBlock Grid.Row="2" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center">Username:</TextBlock>
-        <TextBox Name="usernameTextBox" Grid.Row="3" AcceptsReturn="False" AcceptsTab="False" MaxHeight="30" Margin="20,10,20,20" ></TextBox>
+        <TextBox Name="usernameTextBox" Grid.Row="3" AcceptsReturn="False" AcceptsTab="False" MaxHeight="30" Margin="20,10,20,20"></TextBox>
         <TextBlock Grid.Row="4" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center">Password:</TextBlock>
-        <TextBox Name="passwordTextBox" Grid.Row="5" AcceptsReturn="False" AcceptsTab="False" MaxHeight="30" Margin="20,10,20,20" ></TextBox>
-        <StackPanel Grid.Row="7">
+        
+        <TextBox Grid.Row="5" Name="readablePasswordBox" Visibility="Hidden" VerticalAlignment="Top" MaxHeight="30" Margin="20,10,20,0" />
+        <StackPanel Grid.Row="5">
+            <PasswordBox Name="passwordTextBox" MaxHeight="30" Margin="20,10,20,0" ></PasswordBox>
+            <CheckBox Name="showPassCheckBox" HorizontalAlignment="Right" Margin="0,5,20,10" FontSize="10" Checked="showPassCheckBox_Checked" Unchecked="showPassCheckBox_Unchecked">Show Password</CheckBox>
+        </StackPanel>
+        <TextBlock Grid.Row="6" Name="statusMessage" HorizontalAlignment="Center" Foreground="Red" />
+        <StackPanel Grid.Row="8">
             <Button MinHeight="20" MinWidth="50" MaxWidth="100" Margin="20,20,20,10" Click="Login_Click">_Login</Button>
             <Button MinHeight="20" MinWidth="50" MaxWidth="100" Margin="20,10,20,20" Click="Register_Click">_Register</Button>
         </StackPanel>

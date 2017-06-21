@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Security.Cryptography;
+using MySql.Data.MySqlClient;
+using System.IO;
 
 namespace SchedulerApplication
 {
@@ -136,5 +139,103 @@ namespace SchedulerApplication
             else
                 return elem.ToString();
         }
+
+        //for encryption of user's passwords utilizing AES, stores encrypted password into 48 byte string
+        public static string encryptString(string plainTextPass, byte[] key, byte[] iv)
+        {
+            byte[] encrypted;
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter sw = new StreamWriter(cs))
+                        {
+                            sw.Write(plainTextPass);
+                        }
+                        encrypted = ms.ToArray();
+                    }
+                }
+            }
+            string encryptedString = @"";
+            foreach (byte b in encrypted)
+            {
+                encryptedString += (char)b;
+            }
+
+            //append key and append iv to encrypted string so that the password can be decrypted
+            foreach (byte b in key)
+            {
+                encryptedString += (char)b;
+            }
+            foreach (byte b in iv)
+            {
+                encryptedString += (char)b;
+            }
+
+            return encryptedString;
+        }
+
+        //decrypts AES encrypted passwords
+        public static string decryptString(string encryptedText)
+        {
+            //get the key and iv from the encrypted string input
+            byte[] key = new byte[16];
+            byte[] iv = new byte[16];
+            byte[] encryptedBytes = new byte[16];
+            parseEncryptedString(encryptedText, out key, out iv, out encryptedBytes);
+            string plainText = null;
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = key;
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                using (MemoryStream ms = new MemoryStream(encryptedBytes))
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader sr = new StreamReader(cs))
+                        {
+                            plainText = sr.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            return plainText;
+        }
+
+        //generates 16 random encrypted bytes
+        public static byte[] generateEncryptedBytes()
+        {
+            byte[] randomBytes = new byte[16];
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(randomBytes);
+            }
+            return randomBytes;
+        }
+
+        //returns the password's key, IV, and original encrypted message
+        public static void parseEncryptedString(string encryptedString, out byte[] key, out byte[] iv, out byte[] encryptedBytes)
+        {
+            key = new byte[16];
+            iv = new byte[16];
+            encryptedBytes = new byte[16];
+            int j = 0, k = 0;
+            for (int i = 0; i < encryptedString.Length; i++)
+            {
+                if (i < 16)
+                    encryptedBytes[i] = (byte)encryptedString[i];
+                else if (i >= 16 && i < encryptedString.Length - 16)
+                    key[j++] = (byte)encryptedString[i];
+                else
+                    iv[k++] = (byte)encryptedString[i];
+            }
+        }
+
     }
 }
