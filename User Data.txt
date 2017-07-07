@@ -29,7 +29,7 @@ DB Schema:
 * is the primary key
 
 Courses Table: 
-course_id (int unsigned)*	#unique course ID
+course_id* (int unsigned)	#unique course ID
 course_name (varchar(16))	#course names are limited to only 16 chars
 time_start (varchar(16))	#serialize Time object into a string
 time_end (varchar(16))		#^^
@@ -42,7 +42,7 @@ course_id (int unsigned)	#all days in this table are mapped to a respective cour
 day (varchar(16))		#name of the day
 
 Tasks Table:
-task_id (int unsigned)*		#unique task ID
+task_id* (int unsigned)		#unique task ID
 course_id (int unsigned)	#all tasks in this table are mapped to a respective course_id 
 completed (tinyint unsigned)	#0 = false, 1 = true
 assignment_name (varchar(32))	#
@@ -50,7 +50,7 @@ due (datetime)			#
 notes (varchar(128))		#
 
 Users Table:
-user_id (int unsigned)*		#unique user ID
+user_id* (int unsigned)		#unique user ID
 username (varchar(16))		#user name
 password (varchar(32))		#user password => will need to be encrypted
 email (varchar(32))		#user email address for password recovery

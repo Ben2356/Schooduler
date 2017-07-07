@@ -237,5 +237,19 @@ namespace SchedulerApplication
             }
         }
 
+        //returns the course_id using the courseName and user_id
+        public static uint retrieveCourseId(string courseName)
+        {
+            MySqlCommand cmd = new MySqlCommand("SELECT course_id FROM courses WHERE course_name = " + "\"" + courseName + "\" AND user_id = " + Login.userId, Login.conn);
+            MySqlDataReader r = cmd.ExecuteReader();
+            uint courseId = 0;
+            if (r.Read())
+            {
+                courseId = (uint)r[0];
+            }
+            r.Close();
+            return courseId;
+        }
+
     }
 }

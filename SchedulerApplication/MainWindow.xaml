@@ -28,7 +28,7 @@
                     <MenuItem Command="local:CustomCommands.Settings" />
                 </MenuItem>
                 <MenuItem Header="_Help">
-                    <MenuItem Header="_About" />
+                    <MenuItem Header="_About" Click="aboutButton_Click"/>
                 </MenuItem>
             </Menu>
     
@@ -79,6 +79,7 @@
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Grid>
                                         <Rectangle Name="rectangle" Fill="{TemplateBinding Background}" RadiusX="10" RadiusY="10" />
+                                        <!--want to change the border brush so that the color is matching that of the tile but is a dark version?-->
                                         <Border Name="border" Background="Transparent" BorderThickness="0" BorderBrush="Black" CornerRadius="10" />
                                         <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Grid>
@@ -102,9 +103,22 @@
             <Button Name="add_course_button" Padding="2" Margin="0,2,30,2" HorizontalAlignment="Right" Grid.Row="1" MaxHeight="30" Click="addCourseButton_Click">Add Course</Button>
 
             <!--Task view window -->
-            <DataGrid Grid.Row="2" Margin="30,30,30,10" Name="dg_tasks" AutoGenerateColumns="False" AlternatingRowBackground="Gainsboro" CellEditEnding="dg_tasks_CellEditEnding" CanUserAddRows="False">
+            <DataGrid Grid.Row="2" Margin="30,30,30,10" Name="dg_tasks" AutoGenerateColumns="False" CellEditEnding="dg_tasks_CellEditEnding" CanUserAddRows="False">
                 <DataGrid.Resources>
                     <local:FullDateToMonthDay x:Key="FullDateToMonthDay" />
+                    
+                    <!--TESTING-->
+                    <Style x:Key="test" TargetType="DataGridRow">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridRow">
+                                    
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <!--END TESTING-->
+                    
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>

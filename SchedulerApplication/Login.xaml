@@ -27,11 +27,14 @@
         <TextBox Grid.Row="5" Name="readablePasswordBox" Visibility="Hidden" VerticalAlignment="Top" MaxHeight="30" Margin="20,10,20,0" />
         <StackPanel Grid.Row="5">
             <PasswordBox Name="passwordTextBox" MaxHeight="30" Margin="20,10,20,0" ></PasswordBox>
-            <CheckBox Name="showPassCheckBox" HorizontalAlignment="Right" Margin="0,5,20,10" FontSize="10" Checked="showPassCheckBox_Checked" Unchecked="showPassCheckBox_Unchecked">Show Password</CheckBox>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="forgotPasswordTextBlock" HorizontalAlignment="Left" Margin="20,5,50,10" FontSize="11" Foreground="Blue" MouseLeftButtonDown="forgotPasswordTextBlock_MouseLeftButtonDown">Forgot password?</TextBlock>
+                <CheckBox Name="showPassCheckBox" HorizontalAlignment="Right" Margin="30,5,20,10" FontSize="10" Checked="showPassCheckBox_Checked" Unchecked="showPassCheckBox_Unchecked">Show Password</CheckBox>
+            </StackPanel>
         </StackPanel>
         <TextBlock Grid.Row="6" Name="statusMessage" HorizontalAlignment="Center" Foreground="Red" />
         <StackPanel Grid.Row="8">
-            <Button MinHeight="20" MinWidth="50" MaxWidth="100" Margin="20,20,20,10" Click="Login_Click">_Login</Button>
+            <Button MinHeight="20" MinWidth="50" MaxWidth="100" Margin="20,20,20,10" Click="Login_Click" IsDefault="True">_Login</Button>
             <Button MinHeight="20" MinWidth="50" MaxWidth="100" Margin="20,10,20,20" Click="Register_Click">_Register</Button>
         </StackPanel>
     </Grid>

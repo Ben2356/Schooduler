@@ -23,6 +23,7 @@ namespace SchedulerApplication
     public partial class Login : Window
     {
         public static MySqlConnection conn;
+        public static uint userId;
 
         public Login()
         {
@@ -35,7 +36,7 @@ namespace SchedulerApplication
             //account or validate an existing one, a level of indirection
 
             //this is the temporary solution
-            string sqlPassword = "";
+            string sqlPassword = "bmoreno0";
             string connStr = "server=localhost;user=root;database=schoodulerTest;port=3306;password=" + sqlPassword;
             try
             {
@@ -89,7 +90,7 @@ namespace SchedulerApplication
             }
 
             //will check the encrypted password is the same as one stored in DB given the DB's password key and IV
-            MySqlCommand cmd = new MySqlCommand("SELECT password FROM users WHERE username = \"" + usernameTextBox.Text + "\"", conn);
+            MySqlCommand cmd = new MySqlCommand("SELECT password,user_id FROM users WHERE username = \"" + usernameTextBox.Text + "\"", conn);
             MySqlDataReader r = cmd.ExecuteReader();
             if(r.Read())
             {
@@ -99,6 +100,9 @@ namespace SchedulerApplication
                 string encryptedPass = Utils.encryptString(passwordTextBox.Password, key, iv);
                 if(encryptedPass == encryptedPassComparison)
                 {
+                    //userid to retrieve user specific data from the DB
+                    userId = (uint)(r["user_id"]);
+
                     r.Close();
                     DialogResult = true;
                     return;
@@ -134,6 +138,12 @@ namespace SchedulerApplication
             passwordTextBox.Password = readablePasswordBox.Text;
             readablePasswordBox.Visibility = Visibility.Hidden;
             passwordTextBox.Visibility = Visibility.Visible;
+        }
+
+        //handling for forgot password
+        private void forgotPasswordTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            
         }
     }
 }

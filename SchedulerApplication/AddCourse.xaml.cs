@@ -305,7 +305,15 @@ namespace SchedulerApplication
                 return;
             }
 
-            //TODO: check to make sure course name is unique
+            //check to make sure course name is unique disregarding case
+            for(int i = 0; i < CourseList.Count; i++)
+            {
+                if(courseName.Text.ToUpper() == CourseList[i].CourseName.ToUpper())
+                {
+                    MessageBox.Show("Course name already exists! If you wish to modify the course right click on the tile and select Edit.", "Duplicate Course Name", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
 
             //make sure class is not going back in time
             if(StartHour == EndHour && cmb_startTOD.SelectedValue == cmb_endTOD.SelectedValue && StartMin > EndMin)
@@ -387,13 +395,15 @@ namespace SchedulerApplication
             newCourse = new Course(courseName.Text, start, end, taskList == null ? new BindingList<Task>() : taskList, courseDays, color);
 
             //push the course to the courses table
-            cmd = new MySqlCommand("INSERT INTO courses(course_id,course_name,time_start,time_end,tile_color) VALUES (NULL," + "\"" + courseName.Text + "\",\"" + start.ToString() + "\",\"" + end.ToString() + "\",\"" + color.ToString() + "\")", Login.conn);
+            cmd = new MySqlCommand("INSERT INTO courses(course_id,course_name,time_start,time_end,tile_color,user_id) VALUES (NULL," + "\"" + courseName.Text + "\",\"" + start.ToString() + "\",\"" + end.ToString() + "\",\"" + color.ToString() + "\"," + Login.userId + ")", Login.conn);
             cmd.ExecuteNonQuery();
+
+            uint courseId = Utils.retrieveCourseId(courseName.Text);
 
             //push days to the days table
             for (int i = 0; i < courseDays.Count; i++)
             {
-                cmd = new MySqlCommand("INSERT INTO days(day_id,course_id,day) VALUES (NULL,(SELECT course_id FROM courses WHERE course_name = " + "\"" + courseName.Text + "\"),\"" + courseDays[i] + "\")", Login.conn);
+                cmd = new MySqlCommand("INSERT INTO days(day_id,course_id,day) VALUES (NULL," + courseId + ",\"" + courseDays[i] + "\")", Login.conn);
                 cmd.ExecuteNonQuery();
             }
 
@@ -403,7 +413,7 @@ namespace SchedulerApplication
                 for(int i = 0; i < taskList.Count; i++)
                 {
                     string dateTimeStr = string.Format("{0yyyy-MM-dd HH:mm:ss}", taskList[i].Due);
-                    cmd = new MySqlCommand("INSERT INTO tasks(task_id,course_id,completed,assignment_name,due,notes) VALUES (NULL,(SELECT course_id FROM courses WHERE course_name = " + "\"" + courseName.Text + "\")," + (taskList[i].Completed ? 1 : 0) + ",\"" + taskList[i].Assignment + "\",\"" + dateTimeStr + "\",\"" + taskList[i].Notes + "\")", Login.conn);
+                    cmd = new MySqlCommand("INSERT INTO tasks(task_id,course_id,completed,assignment_name,due,notes) VALUES (NULL, " + courseId + "," + (taskList[i].Completed ? 1 : 0) + ",\"" + taskList[i].Assignment + "\",\"" + dateTimeStr + "\",\"" + taskList[i].Notes + "\")", Login.conn);
                     cmd.ExecuteNonQuery();
                 }
             }

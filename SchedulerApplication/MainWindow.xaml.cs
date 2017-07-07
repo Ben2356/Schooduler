@@ -63,6 +63,9 @@ namespace SchedulerApplication
             {
                 if (weekOfDay > DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))
                     day = 1;
+
+                //TODO: check for the end of the month so that the days do not roll past the end of the month numerically
+
                 weekViewDayList.Add(day++);
             }
             ViewingWeek = DateTime.Now.Month + "/" + weekOfDay + "/" + DateTime.Now.Year;
@@ -70,7 +73,7 @@ namespace SchedulerApplication
             InitializeComponent();
 
             //server connection is established, if there is data to retrieve do it before drawing the grid
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM courses", Login.conn);
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM courses WHERE user_id = " + Login.userId, Login.conn);
             MySqlDataReader reader = cmd.ExecuteReader();
 
             //tuple represents course_name, time_start, time_end, and tile_color
@@ -89,7 +92,7 @@ namespace SchedulerApplication
                 
                 //get the day entries for the corresponding course
                 List<string> courseDays = new List<string>();
-                cmd = new MySqlCommand("SELECT day FROM days WHERE course_id = (SELECT course_id FROM courses WHERE course_name = \"" + courseName + "\")", Login.conn);
+                cmd = new MySqlCommand("SELECT day FROM days WHERE course_id = " + Utils.retrieveCourseId(courseName), Login.conn);
                 reader = cmd.ExecuteReader();
                 while(reader.Read())
                 {
@@ -100,7 +103,7 @@ namespace SchedulerApplication
                 //get the task entries for the corresponding course
                 BindingList<Task> taskList = new BindingList<Task>();
                 Task t;
-                cmd = new MySqlCommand("SELECT * FROM tasks WHERE course_id = (SELECT course_id FROM courses WHERE course_name = \"" + courseName + "\")", Login.conn);
+                cmd = new MySqlCommand("SELECT * FROM tasks WHERE course_id = " + Utils.retrieveCourseId(courseName), Login.conn);
                 reader = cmd.ExecuteReader();
                 while(reader.Read())
                 {
@@ -168,6 +171,11 @@ namespace SchedulerApplication
            //MessageBox.Show("MODIFY TEST!");
         }
 
+        private void dg_tasks_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            //MessageBox.Show("edit ending");
+        }
+
         private bool isRefCall = false;
         private ToggleButton prevSelectedButton;
         private string tileName = null;
@@ -180,8 +188,10 @@ namespace SchedulerApplication
                 return;
             ToggleButton btn = sender as ToggleButton;
             BindingList<Task> list = btn.GetValue(ButtonProperties.TaskListProperty) as BindingList<Task>;
+            //
             list.AddingNew += taskList_AddingNew;
             list.ListChanged += taskList_ListChanged;
+            //
             dg_tasks.ItemsSource = list;
             toggleButtonState(btn);
             prevSelectedButton = btn;
@@ -223,6 +233,8 @@ namespace SchedulerApplication
 
         private void addCourseButton_Click(object sender, RoutedEventArgs e)
         {
+            //TODO: if there are any selected buttons then deselect them first
+
             AddCourse addCourseWindow = new AddCourse(CourseList);
             if(addCourseWindow.ShowDialog() == true)
             {
@@ -264,15 +276,16 @@ namespace SchedulerApplication
             dg_tasks.ItemsSource = null;
         }
 
-        private void dg_tasks_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            //MessageBox.Show("edit ending");
-        }
-
         private void newTaskButton_Click(object sender, RoutedEventArgs e)
         {
             AddTask newTaskWindow = new AddTask(dg_tasks.ItemsSource as BindingList<Task>, tileName);
             newTaskWindow.ShowDialog();
+        }
+
+        private void aboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            About newAboutWindow = new About();
+            newAboutWindow.ShowDialog();
         }
     }
 

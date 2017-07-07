@@ -95,8 +95,9 @@ namespace SchedulerApplication
             taskList.Add(new Task(false, assignmentName.Text, due, notes.Text));
 
             //push the new task to the database
-            MySqlCommand cmd = new MySqlCommand("INSERT INTO tasks (task_id,course_id,completed,assignment_name,due,notes) VALUES (NULL,(SELECT course_id FROM courses WHERE course_name = \"" + courseName + "\"),0,\"" + assignmentName.Text + "\",\"" + Utils.buildSQLDateTime(due) + "\",\"" + notes.Text + "\")",Login.conn);
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO tasks (task_id,course_id,completed,assignment_name,due,notes) VALUES (NULL," + Utils.retrieveCourseId(courseName) + ",0,\"" + assignmentName.Text + "\",\"" + Utils.buildSQLDateTime(due) + "\",\"" + notes.Text + "\")",Login.conn);
             cmd.ExecuteNonQuery();
+            DialogResult = true;
         }
 
         private void validateTimeChar(object sender, TextCompositionEventArgs e)
