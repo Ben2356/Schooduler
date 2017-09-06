@@ -46,3 +46,4 @@ D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Regist
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\Register.baml
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\About.g.cs
 D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\About.baml
+D:\Users\Ben25\Documents\GitHub\Schooduler\SchedulerApplication\obj\Debug\SchedulerApplication.csproj.CoreCompileInputs.cache

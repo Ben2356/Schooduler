@@ -334,15 +334,8 @@ namespace SchedulerApplication
                         //if there is a day that is selected that matches one of the courseDays check to make sure there are no collisions
                         if(courseDays[k] == CourseList[i].CourseDay[j])
                         {
-                            int mStartHour;
-                            if ((string)cmb_startTOD.SelectedValue == "PM" && StartHour == 12)
-                                mStartHour = StartHour + 12;
-                            else if ((string)cmb_startTOD.SelectedValue == "AM" && StartHour == 12)
-                                mStartHour = StartHour - 12;
-                            else
-                                mStartHour = StartHour;
-
-                            int mEndHour = (EndHour + ((EndHour != 12 && (string)cmb_endTOD.SelectedValue == "PM") ? 12 : 0));
+                            int mStartHour = Utils.toMilitaryHour(StartHour, (string)cmb_startTOD.SelectedValue);
+                            int mEndHour = Utils.toMilitaryHour(EndHour, (string)cmb_endTOD.SelectedValue);
 
                             //bottom half overlapping
                             if (mStartHour < CourseList[i].TimeEnd.MilitaryTimeHour && mEndHour > CourseList[i].TimeEnd.MilitaryTimeHour)
